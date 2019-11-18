@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title></title>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+   <!-- <script src="static/js/process.js"></script> -->
+</head>
+<body>
+
+{% extends "layout.html" %}
+{% block content %}
+  <div class="home">
+    <h1>抽象话翻译机</h1>
+    <p>把你的文字都给你emoji咯！</p>
+  </div>
+
+<center>
+<form method="POST">
+  <div>
+    <button type="button" onclick="process('0')" class="button">轻度抽象</button>
+    <button type="button" onclick="process('1')" class="button">深度抽象</button>
+
+  </div>
+  <div>
+    <textarea name="raw" id="t" placeholder="此处输入原文" class="textarea" >  </textarea> 
+    <textarea name="tranlated" id="output" placeholder="翻译结果" class="textarea">  </textarea> 
+  </div>
+
+</form>
+</center>
+
+<script type="text/javascript">
+  $('form').on('submit', function(event) {
+       $.ajax({
+          data : {
+             text : $('#t').val(),
+             method:  $('#method').val(),
+                 },
+             type : 'POST',
+             url : '/process'
+            })
+        .done(function(data) {
+          $('#output').text(data.output).show();
+      });
+      event.preventDefault();
+      });
+
+function process(url){
+    $.ajax({
+        type : 'POST',
+        url  : '/process',
+        data : {text: $('#t').val(), method: url},
+        success :  function(data){
+            $('#output').text(data.output).show();
+        }
+    });
+}
+</script>
+{% endblock %}
+
+</body>
+
+</html>
