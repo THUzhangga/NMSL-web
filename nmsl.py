@@ -24,4 +24,4 @@ def process():
         return jsonify({'error' : 'Missing data!'})
 if __name__ == '__main__':
     app.debug = True
-    app.run(host='49.233.209.32', port=8000)
+    app.run(host='172.21.0.13', port=8000)
