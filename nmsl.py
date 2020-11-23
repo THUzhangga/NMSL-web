@@ -137,11 +137,11 @@ def wechat():
                 user = message.FromUserName
                 if check_USER_not_exist(user):
                     cursor.execute(
-                        "INSERT INTO USERS (USER, METHOD) VALUES (?,?);", (user, 0))
+                        "INSERT INTO USERS (USER, METHOD) VALUES (?,?);", (user, 2))
                     con.commit()
                 else:
                     cursor.execute(
-                        "UPDATE USERS set METHOD=? where USER=?;", (0, user))
+                        "UPDATE USERS set METHOD=? where USER=?;", (2, user))
                     con.commit()
                 message.text('已切换到英文抽象模式')
 
