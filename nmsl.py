@@ -4,6 +4,7 @@ from flask import Flask, render_template, jsonify, request, make_response
 import hashlib
 import time
 from nmsl_local import *
+from convert import convert_alphabet
 import pickle
 import sqlite3
 from lxml import etree
@@ -120,7 +121,7 @@ def wechat():
                 else: # 用户存在，则更新
                     cursor.execute("UPDATE USERS set METHOD=? where USER=?;", (1, user))
                     con.commit()
-                message.text('深度抽象模式')
+                message.text('已切换到深度抽象模式')
 
             if message.Content == '轻度' or message.Content == '0':
                 user = message.FromUserName
@@ -130,7 +131,20 @@ def wechat():
                 else:
                     cursor.execute("UPDATE USERS set METHOD=? where USER=?;", (0, user))
                     con.commit()
-                message.text('轻度抽象模式')
+                message.text('已切换到轻度抽象模式')
+            
+            if message.Content == '英文' or message.Content == '2':
+                user = message.FromUserName
+                if check_USER_not_exist(user):
+                    cursor.execute(
+                        "INSERT INTO USERS (USER, METHOD) VALUES (?,?);", (user, 0))
+                    con.commit()
+                else:
+                    cursor.execute(
+                        "UPDATE USERS set METHOD=? where USER=?;", (0, user))
+                    con.commit()
+                message.text('已切换到英文抽象模式')
+
             else:
                 user = message.FromUserName
                 print(user)
@@ -139,7 +153,10 @@ def wechat():
                 else: # 用户存在，需要检查抽象模式
                     method = check_USER_method(user)
                     print(method)
-                    message.text(text_to_emoji(message.Content, method=method))
+                    if method in [0, 1]:
+                        message.text(text_to_emoji(message.Content, method=method))
+                    elif method == 2:
+                        message.text(convert_alphabet(message.Content))
 
             return message.reply()
 
